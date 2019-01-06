@@ -1,0 +1,55 @@
+/*
+	 CSS-Tricks Example
+	 by Chris Coyier
+	 http://css-tricks.com
+*/
+
+* { margin: 0; padding: 0; }
+body { font: 14px/1.4 Arial, Helvetica Neue, Helvetica, sans-serif; }
+#page-wrap { width: 800px; margin: 0 auto; }
+
+
+table { border-collapse: collapse; }
+table td, table th { border: 1px solid red; padding: 3px; }
+
+
+#header { height: 15px; width: 100%; margin: 20px 0; background: #ffffff; text-align: center; color: red; font: bold 15px Arial, Helvetica Neue, Helvetica, sans-serif; text-decoration: uppercase; letter-spacing: 5px; padding: 8px 0px; }
+
+
+#identity { clear: both; width: 100%; margin: 5px 0 0 0; border: 0px solid black; }
+#identity table { width:100%;}
+#identity table, #identity th, #identity td { border: 0px dotted black; font: 13px Arial, Helvetica Neue, Helvetica, sans-serif; }
+#identity th {width: 15%; text-align: left; color: red}
+#identity td {border-bottom:1pt dotted red; width: 35%;}
+
+
+#customer { margin: 20px 0 5px 0;}
+#meta { margin-top: 1px; width: 300px; float: right; }
+#meta td { text-align: right; }
+#meta td.meta-head { text-align: left; background: #eeeeee; color: red; }
+
+
+#items { clear: both; width: 100%; margin: 20px 0 0 0; border: 1px solid red; }
+#items th { background: #eeeeee; color: red;}
+#items tr.item-row td { border: 0; vertical-align: top; }
+
+#items .item-row td.no { border-bottom:1pt dotted red; vertical-align: top; }
+#items .item-row td.productName { border-bottom:1pt dotted red; vertical-align: top; }
+#items .item-row td.unitName { border-bottom:1pt dotted red; vertical-align: top; }
+#items .item-row td.detailManufacturedDate { border-bottom:1pt dotted red; vertical-align: top; }
+#items .item-row td.detailQuantity { border-bottom:1pt dotted red; vertical-align: top; }
+#items .item-row td.detailPrice { border-bottom:1pt dotted red; vertical-align: top; }
+#items .item-row td.detailCost { border-bottom:1pt dotted red; vertical-align: top; }
+
+#items td.total-line { border-right: 0; text-align: right; color: red;}
+#items td.total-value { border-left: 0; padding: 10px; }
+#items td.balance { background: #eeeeee; }
+#items td.blank { border: 0; }
+
+#terms { text-align: center; margin: 20px 0 0 0; font: bold 10px Helvetica, Sans-Serif; color: red;}
+#terms h5 { text-transform: uppercase; font: bold 10px Helvetica, Sans-Serif; letter-spacing: 5px; border-bottom: 1px solid black; padding: 0 0 8px 0; margin: 0 0 8px 0;}
+
+
+#function {margin: auto; width: 21%; border: 0px solid green; padding: 10px;}
+@media print {.no-print, .no-print *{display: none !important;}}
+@page {size: auto;   /* auto is the initial value */ margin: 0 40px 0 40px;  /* this affects the margin in the printer settings */display: none !important;}

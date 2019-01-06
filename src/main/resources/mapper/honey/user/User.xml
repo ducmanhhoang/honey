@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+	<resultMap type="com.honey.user.service.User" id="user">
+		<result column="USER_ID" 				jdbcType="VARCHAR" 			property="userId" 				javaType="String"/>
+		<result column="USER_FULLNAME" 			jdbcType="VARCHAR"			property="userFullname" 		javaType="String"/>
+		<result column="USER_PASSWORD" 			jdbcType="VARCHAR"			property="userPassword"			javaType="String"/>
+		<result column="USER_PHONE" 			jdbcType="VARCHAR" 			property="userPhone" 			javaType="String"/>
+		<result column="USER_EMAIL" 			jdbcType="VARCHAR"			property="userEmail"			javaType="String"/>
+		<result column="USER_ADDRESS"			jdbcType="VARCHAR"			property="userAddress" 			javaType="String"/>
+		<result column="USER_ROLE" 				jdbcType="VARCHAR"			property="userRole"				javaType="String"/>
+		
+		<result column="CREATION_DATE"			jdbcType="DATE"				property="creationDate"			javaType="String"/>
+		<result column="CREATED_BY"				jdbcType="NUMERIC"			property="createdBy"			javaType="int"/>
+		<result column="CREATED_BY_NAME" 		jdbcType="VARCHAR"			property="createdByName" 		javaType="String"/>
+		<result column="MODIFIED_DATE"			jdbcType="DATE"				property="modifiedDate"			javaType="String"/>
+		<result column="MODIFIED_BY"			jdbcType="NUMERIC"			property="modifiedBy"			javaType="int"/>
+		<result column="MODIFIED_BY_NAME" 		jdbcType="VARCHAR"			property="modifiedByName" 		javaType="String"/>
+		
+		<result column="DELETE_STATUS"			jdbcType="VARCHAR"			property="deleteStatus"			javaType="String"/>
+		
+		<result column="BEGIN_CREATION_DATE"	jdbcType="DATE"				property="beginCreationDate"	javaType="String"/>
+		<result column="END_CREATION_DATE" 		jdbcType="DATE"				property="endCreationDate" 		javaType="String"/>
+		<result column="ORDER_BY"				jdbcType="VARCHAR"			property="orderBy"				javaType="String"/>
+		<result column="PAGE_NO" 				jdbcType="NUMERIC" 			property="pageNo" 				javaType="int"/>
+		<result column="PAGE_SIZE" 				jdbcType="NUMERIC"			property="pageSize" 			javaType="int"/>
+		<result column="POINT" 					jdbcType="NUMERIC"			property="point" 				javaType="int"/>
+	</resultMap>
+	
+	<update id="updateUser" parameterType="user">
+		UPDATE 
+			USER
+		<set>
+			<if test="userFullname != null and userFullname != ''">
+				USER_FULLNAME = #{userFullname},
+			</if>
+			<if test="userPassword != null and userPassword != ''">
+				USER_PASSWORD = #{userPassword},
+			</if>
+			<if test="userPhone != null and userPhone != ''">
+				USER_PHONE = #{userPhone},
+			</if>
+			<if test="userEmail != null and userEmail != ''">
+				USER_EMAIL = #{userEmail},
+			</if>
+			<if test="userAddress != null and userAddress != ''">
+				USER_ADDRESS = #{userAddress},
+			</if>
+			<if test="userRole != null and userRole != ''">
+				USER_ROLE = #{userRole},
+			</if>
+			<if test="modifiedDate == '' or modifiedDate == null or modifiedDate != '' or modifiedDate != null">
+				MODIFIED_DATE=now(),
+			</if>
+			<if test="modifiedBy != '' and modifiedBy != null">
+				MODIFIED_BY=#{modifiedBy},
+			</if>
+			<if test="deleteStatus != '' and deleteStatus != null">
+				DELETE_STATUS=#{deleteStatus},
+			</if>
+		</set>
+		<where>
+			<include refid="userWhere"></include>
+		</where>
+	</update>
+	
+	<select id="selectUserListPaging" resultMap="user" parameterType="user">
+		SELECT 
+		<include refid="userSelect"></include> 
+		FROM 
+			USER A 
+			LEFT JOIN USER B ON A.CREATED_BY = B.USER_ID
+			LEFT JOIN USER C ON A.MODIFIED_BY = B.USER_ID
+		<where>
+			<include refid="userWhere"></include>
+		</where>
+		<choose>
+			<when test="orderBy != null and orderBy != ''">
+				ORDER BY A.#{orderBy} DESC
+			</when>
+			<otherwise>
+				ORDER BY A.USER_ID DESC
+			</otherwise>
+		</choose>
+		LIMIT #{point}, #{pageSize}
+	</select>
+	
+	<select id="selectUserListPagingTotCount" resultType="int" parameterType="user">
+		SELECT 
+			COUNT(A.USER_ID)
+		FROM 
+			USER A 
+			LEFT JOIN USER B ON A.CREATED_BY = B.USER_ID
+			LEFT JOIN USER C ON A.MODIFIED_BY = B.USER_ID
+		<where>
+			<include refid="userWhere"></include>
+		</where>
+	</select>
+	
+	<select id="selectUserList" resultMap="user" parameterType="user">
+		SELECT 
+		<include refid="userSelect"></include> 
+		FROM 
+			USER A 
+			LEFT JOIN USER B ON A.CREATED_BY = B.USER_ID
+			LEFT JOIN USER C ON A.MODIFIED_BY = B.USER_ID
+		<where>
+			<include refid="userWhere"></include>
+		</where>
+		<choose>
+			<when test="orderBy != null and orderBy != ''">
+				ORDER BY A.#{orderBy} DESC
+			</when>
+			<otherwise>
+				ORDER BY A.USER_ID DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insertUser">
+		INSERT INTO USER (USER_ID, USER_FULLNAME, USER_PASSWORD, USER_PHONE, USER_EMAIL, USER_ADDRESS, USER_ROLE, CREATION_DATE, CREATED_BY, MODIFIED_DATE, MODIFIED_BY, DELETE_STATUS)
+		VALUES (#{userId}, #{userFullname}, #{userPassword}, #{userPhone}, #{userEmail}, #{userAddress}, #{userRole}, NOW(), #{createdBy}, NOW(), #{modifiedBy}, #{deleteStatus})
+	</insert>
+	
+	<select id="selectUserByUserId" resultMap="user" parameterType="user">
+		SELECT 
+		<include refid="userSelect"></include> 
+		FROM 
+			USER A 
+			LEFT JOIN USER B ON A.CREATED_BY = B.USER_ID
+			LEFT JOIN USER C ON A.MODIFIED_BY = B.USER_ID
+		<where>
+			<include refid="userWhere"></include>
+		</where>
+	</select>
+	
+	<sql id="userWhere">
+		<if test="userId != null and userId != ''">
+			AND A.USER_ID = #{userId}
+		</if>
+		<if test="userFullname != null and userFullname != ''">
+			AND A.USER_FULLNAME = #{userFullname}
+		</if>
+		<if test="userPassword != null and userPassword != ''">
+			AND A.USER_PASSWORD = #{userPassword}
+		</if>
+		<if test="userPhone != null and userPhone != ''">
+			AND A.USER_PHONE = #{userPhone}
+		</if>
+		<if test="userEmail != null and userEmail != ''">
+			AND A.USER_EMAIL = #{userEmail}
+		</if>
+		<if test="userAddress != null and userAddress != ''">
+			AND A.USER_ADDRESS = #{userAddress}
+		</if>
+		<if test="userRole != null and userRole != ''">
+			AND A.USER_ROLE = #{userRole}
+		</if>
+		<if test="beginCreationDate != null and endCreationDate != null and beginCreationDate != '' and endCreationDate != ''">
+			AND A.CREATION_DATE BETWEEN STR_TO_DATE(#{beginCreationDate}, '%d-%m-%Y') AND STR_TO_DATE(#{endCreationDate}, '%d-%m-%Y') + INTERVAL 1 DAY
+		</if>
+		<if test="createdByName != null and createdByName != ''">
+			AND B.CREATED_BY_NAME = #{createdByName}
+		</if>
+		<if test="deleteStatus != null and deleteStatus != ''">
+			AND A.DELETE_STATUS = #{deleteStatus}
+		</if>
+	</sql>
+	
+	<sql id="userSelect">
+		A.USER_ID, 
+		A.USER_FULLNAME, 
+		A.USER_PASSWORD, 
+		A.USER_PHONE, 
+		A.USER_EMAIL, 
+		A.USER_ADDRESS, 
+		A.USER_ROLE, 
+		
+		A.CREATION_DATE, 
+		A.CREATED_BY, 
+		B.USER_FULLNAME AS CREATED_BY_NAME, 
+		A.MODIFIED_DATE, 
+		A.MODIFIED_BY, 
+		C.USER_FULLNAME AS MODIFIED_BY_NAME, 
+		
+		A.DELETE_STATUS
+	</sql>
+</mapper>
